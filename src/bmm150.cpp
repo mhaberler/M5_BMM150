@@ -22,12 +22,7 @@
 #include "M5_BMM150_DEFS.h"
 #include "Preferences.h"
 #include "math.h"
-#include <Adafruit_DPS310.h>
 #include <Arduino.h>
-
-Adafruit_DPS310 dps;
-Adafruit_Sensor *dps_temp = dps.getTemperatureSensor();
-Adafruit_Sensor *dps_pressure = dps.getPressureSensor();
 
 Preferences prefs;
 
@@ -98,7 +93,7 @@ int8_t i2c_write(uint8_t dev_id, uint8_t reg_addr, uint8_t *read_data,
 int8_t bmm150_initialization() {
   int8_t rslt = BMM150_OK;
 
-  dev.dev_id = 0x13;          // Device address setting.  设备地址设置
+  dev.dev_id = 0x10;          // Device address setting.  设备地址设置
   dev.intf = BMM150_I2C_INTF; // SPI or I2C interface setup.  SPI或I2C接口设置
   dev.read = i2c_read;        // Read the bus pointer.  读总线指针
   dev.write = i2c_write;      // Write the bus pointer.  写总线指针
@@ -154,13 +149,9 @@ void setup() {
 
   //   Wire.begin(21, 22,
   //              400000UL); // Set the frequency of the SDA SCL.
-#ifdef RED_PORT
-  Wire.begin(32, 33, 100000UL);
-#else
   Wire.begin(21, 22,
              100000UL); // Set the frequency of the SDA SCL.
                         // 设置SDA和SCL的频率
-#endif
   log_e("---- setup done");
 #endif
 
@@ -179,14 +170,6 @@ void setup() {
   display.begin();
   display.setColorDepth(8);
 #endif
-
-  log_e("DPS310");
-  if (!dps.begin_I2C(0x76, &Wire)) {
-    log_e("Failed to find DPS");
-    while (1)
-      yield();
-  }
-  log_e("DPS OK!");
 
   img.setColorDepth(1); // Set bits per pixel for colour.  设置色深为1
   img.setTextColor(TFT_WHITE); // Set the font foreground colour (background is.
