@@ -147,11 +147,14 @@ void setup() {
   // M5.Power.begin(); // Init Power module.  初始化电源设置
   log_e("---- before Wire.begin");
 
-  //   Wire.begin(21, 22,
-  //              400000UL); // Set the frequency of the SDA SCL.
+#ifdef RED_PORT
+  Wire.begin(32, 33, 100000UL);
+#else
   Wire.begin(21, 22,
              100000UL); // Set the frequency of the SDA SCL.
                         // 设置SDA和SCL的频率
+#endif
+
   log_e("---- setup done");
 #endif
 
